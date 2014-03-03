@@ -1,0 +1,9 @@
+name: GlobalChat
+main: com.fullhousedev.globalchat.bukkit.GlobalChat
+version: 1.0
+commands:
+   gchat:
+      description: Handles everything global-chat
+      usage: /gchat <help|toggle|socialspy|message> <args>
+      permission: globalchat.gchat
+      permission-message: You don't have permissions.

@@ -69,10 +69,10 @@ public class MessageListener implements PluginMessageListener{
                     }
                     
                     users = usersToggled.split(", ");
-                    plugin.noMessagePlayers = (ArrayList<String>) Arrays.asList(users);
+                    plugin.toggledUsers = (ArrayList<String>) Arrays.asList(users);
                     
                     users = usersSocialspy.split(", ");
-                    plugin.socialspyPlayers = (ArrayList<String>) Arrays.asList(users);
+                    plugin.socialspyUsers = (ArrayList<String>) Arrays.asList(users);
                 }
                 else if(subSubChannel.equals("UserSync")) {
                     short len = in.readShort();
@@ -89,12 +89,12 @@ public class MessageListener implements PluginMessageListener{
                     }
                     
                     StringBuilder sbToggle = new StringBuilder();
-                    for(String username : plugin.noMessagePlayers) {
+                    for(String username : plugin.toggledUsers) {
                         sbToggle.append(username).append(", ");
                     }
                     
                     StringBuilder sbSocialSpy = new StringBuilder();
-                    for(String username : plugin.socialspyPlayers) {
+                    for(String username : plugin.socialspyUsers) {
                         sbToggle.append(username).append(", ");
                     }
                     
@@ -134,10 +134,49 @@ public class MessageListener implements PluginMessageListener{
                     String message = customMsg.readUTF();
                     
                     Player playerObj = Bukkit.getPlayer(userTo);
-                    if(playerObj != null) {
+                    if(playerObj != null && playerObj.isOnline()) {
                         playerObj.sendMessage(ChatColor.GOLD +
                                     "[" + userFrom + " -> " + userTo + "]" +
                                     message);
+                    }
+                    for(String username : plugin.socialspyUsers) {
+                        Player ssPlayer = Bukkit.getPlayer(username);
+                        if(ssPlayer != null && ssPlayer.isOnline()) {
+                            ssPlayer.sendMessage("[global]" + player.getName() +
+                                    " -> " + username + ": " + message);
+                        }
+                    }
+                }
+                else if(subSubChannel.equals("togglemsg")) {
+                    short len = in.readShort();
+                    byte[] msgBytes = new byte[len];
+                    in.readFully(msg);
+                    DataInputStream customMsg = new DataInputStream(
+                            new ByteArrayInputStream(msgBytes));
+                    String username = customMsg.readUTF();
+                    boolean on = customMsg.readBoolean();
+                    
+                    if(on) {
+                        plugin.toggledUsers.add(username.toLowerCase());
+                    }
+                    else {
+                        plugin.toggledUsers.remove(username.toLowerCase());
+                    }
+                }
+                else if(subSubChannel.equals("toggless")) {
+                    short len = in.readShort();
+                    byte[] msgBytes = new byte[len];
+                    in.readFully(msg);
+                    DataInputStream customMsg = new DataInputStream(
+                            new ByteArrayInputStream(msgBytes));
+                    String username = customMsg.readUTF();
+                    boolean on = customMsg.readBoolean();
+                    
+                    if(on) {
+                        plugin.socialspyUsers.add(username.toLowerCase());
+                    }
+                    else {
+                        plugin.socialspyUsers.remove(username.toLowerCase());
                     }
                 }
                 
