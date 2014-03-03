@@ -138,4 +138,29 @@ public class PluginMessageManager {
             Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static void userConnect(String username,
+            String server, Plugin pl) {
+        try {
+            ByteArrayOutputStream customData = new ByteArrayOutputStream();
+            DataOutputStream outCustom = new DataOutputStream(customData);
+            outCustom.writeUTF(username);
+            outCustom.writeUTF(server);
+            
+            sendRawMessage("userconnect", "ALL", customData.toByteArray(), pl);
+        } catch (IOException ex) {
+            Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public static void userDisconnect(String username,
+            Plugin pl) {
+        try {
+            ByteArrayOutputStream customData = new ByteArrayOutputStream();
+            DataOutputStream outCustom = new DataOutputStream(customData);
+            outCustom.writeUTF(username);
+            
+            sendRawMessage("userdisconnect", "ALL", customData.toByteArray(), pl);
+        } catch (IOException ex) {
+            Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

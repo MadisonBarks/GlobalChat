@@ -63,6 +63,8 @@ public class GlobalChat extends JavaPlugin {
         }.runTaskLater(this, 20);
         
         getCommand("gchat").setExecutor(new GChatListener(this));
+        getServer().getPluginManager().registerEvents(new EventListeners(this),
+                this);
     }
 
     private void getServerName() {
