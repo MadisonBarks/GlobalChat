@@ -17,6 +17,7 @@
  */
 package com.fullhousedev.globalchat.bukkit;
 
+import com.fullhousedev.globalchat.bukkit.commands.GChatListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ public class GlobalChat extends JavaPlugin {
 
     public HashMap<String, String> players;
     public String serverName;
-    public ArrayList<String> noMessagePlayers;
-    public ArrayList<String> socialspyPlayers;
+    public ArrayList<String> toggledUsers;
+    public ArrayList<String> socialspyUsers;
 
     @Override
     public void onEnable() {
@@ -47,8 +48,8 @@ public class GlobalChat extends JavaPlugin {
         this.getServer().getMessenger().registerIncomingPluginChannel(this,
                 "BungeeCord", new MessageListener(this));
         players = new HashMap<>();
-        noMessagePlayers = new ArrayList<>();
-        socialspyPlayers = new ArrayList<>();
+        toggledUsers = new ArrayList<>();
+        socialspyUsers = new ArrayList<>();
 
         getServerName();
         
@@ -61,6 +62,7 @@ public class GlobalChat extends JavaPlugin {
             }
         }.runTaskLater(this, 20);
         
+        getCommand("gchat").setExecutor(new GChatListener(this));
     }
 
     private void getServerName() {
