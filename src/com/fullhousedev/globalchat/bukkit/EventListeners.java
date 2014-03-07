@@ -18,7 +18,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class EventListeners implements Listener{
     
-    GlobalChat plugin;
+    private GlobalChat plugin;
+    public static boolean waitingOnJoin = false;
     
     public EventListeners(GlobalChat pl) {
         plugin = pl;
@@ -26,6 +27,10 @@ public class EventListeners implements Listener{
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent pje) {
+        if(waitingOnJoin) {
+            PluginMessageManager.getServerName(plugin);
+            waitingOnJoin = false;
+        }
         PluginMessageManager.userConnect(pje.getPlayer().getName().toLowerCase(),
                 plugin.serverName, plugin);
     }

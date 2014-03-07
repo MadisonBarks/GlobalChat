@@ -63,7 +63,10 @@ public class PluginMessageManager {
             Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // OR, if you don't need to send it to a specific player
+        if(Bukkit.getOnlinePlayers().length == 0) {
+            EventListeners.waitingOnJoin = true;
+            return;
+        }
         Player p = Bukkit.getOnlinePlayers()[0];
 
         p.sendPluginMessage(pl, "BungeeCord", b.toByteArray());

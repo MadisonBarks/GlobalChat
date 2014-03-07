@@ -51,87 +51,11 @@ public class GlobalChat extends JavaPlugin {
         toggledUsers = new ArrayList<>();
         socialspyUsers = new ArrayList<>();
 
-        getServerName();
-        
-        //Runs the sync task later, because we need the server name before we
-        //do anything else.
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                syncUsers();
-            }
-        }.runTaskLater(this, 20);
+        PluginMessageManager.getServerName(this);
         
         getCommand("gchat").setExecutor(new GChatListener(this));
         getServer().getPluginManager().registerEvents(new EventListeners(this),
                 this);
-    }
-
-    private void getServerName() {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(b);
-
-        try {
-            out.writeUTF("GetServer");
-        } catch (IOException ex) {
-            Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // OR, if you don't need to send it to a specific player
-        Player p = Bukkit.getOnlinePlayers()[0];
-
-        p.sendPluginMessage(this, "BungeeCord", b.toByteArray());
-    }
-    
-    private void syncUsers() {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(b);
-
-        try {
-            out.writeUTF("Forward");
-            out.writeUTF("ALL");
-            out.writeUTF("UserSync");
-            
-            ByteArrayOutputStream customData = new ByteArrayOutputStream();
-            DataOutputStream outCustom = new DataOutputStream(customData);
-            outCustom.writeUTF(serverName);
-            
-            out.writeShort(customData.toByteArray().length);
-            out.write(customData.toByteArray());
-        } catch (IOException ex) {
-            Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // OR, if you don't need to send it to a specific player
-        Player p = Bukkit.getOnlinePlayers()[0];
-
-        p.sendPluginMessage(this, "BungeeCord", b.toByteArray());
-    }
-    
-    public void sendSyncResponse(String playerList) {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(b);
-
-        try {
-            out.writeUTF("Forward");
-            out.writeUTF("ALL");
-            out.writeUTF("UserSync");
-            
-            ByteArrayOutputStream customData = new ByteArrayOutputStream();
-            DataOutputStream outCustom = new DataOutputStream(customData);
-            outCustom.writeUTF(serverName);
-            outCustom.writeUTF(playerList);
-            
-            out.writeShort(customData.toByteArray().length);
-            out.write(customData.toByteArray());
-        } catch (IOException ex) {
-            Logger.getLogger(GlobalChat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // OR, if you don't need to send it to a specific player
-        Player p = Bukkit.getOnlinePlayers()[0];
-
-        p.sendPluginMessage(this, "BungeeCord", b.toByteArray());
     }
 
 }
