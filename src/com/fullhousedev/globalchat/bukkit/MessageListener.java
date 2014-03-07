@@ -69,10 +69,19 @@ public class MessageListener implements PluginMessageListener{
                     }
                     
                     users = usersToggled.split(", ");
-                    plugin.toggledUsers = (ArrayList<String>) Arrays.asList(users);
+                    for(String user : users) {
+                        if(!plugin.toggledUsers.contains(user)) {
+                            plugin.toggledUsers.add(user);
+                        }
+                    }
                     
                     users = usersSocialspy.split(", ");
                     plugin.socialspyUsers = (ArrayList<String>) Arrays.asList(users);
+                    for(String user : users) {
+                        if(!plugin.socialspyUsers.contains(user)) {
+                            plugin.socialspyUsers.add(user);
+                        }
+                    }
                 }
                 else if(subSubChannel.equals("UserSync")) {
                     short len = in.readShort();
@@ -183,6 +192,7 @@ public class MessageListener implements PluginMessageListener{
             } else if (subchannel.equals("GetServer")) {
                 // Example: GetServer subchannel
                 plugin.serverName = in.readUTF();
+                PluginMessageManager.syncUsers(plugin, plugin.serverName);
             }
         } catch (IOException e) {
             // There was an issue in creating the subchannel string
